@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS message;
+DROP TABLE IF EXISTS friendship;
+DROP TABLE IF EXISTS "user";
