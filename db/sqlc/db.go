@@ -27,11 +27,17 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.createFriendShipStmt, err = db.PrepareContext(ctx, createFriendShip); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateFriendShip: %w", err)
 	}
+	if q.createMessageStmt, err = db.PrepareContext(ctx, createMessage); err != nil {
+		return nil, fmt.Errorf("error preparing query CreateMessage: %w", err)
+	}
 	if q.createUserStmt, err = db.PrepareContext(ctx, createUser); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateUser: %w", err)
 	}
 	if q.deleteFriendShipStmt, err = db.PrepareContext(ctx, deleteFriendShip); err != nil {
 		return nil, fmt.Errorf("error preparing query DeleteFriendShip: %w", err)
+	}
+	if q.deleteMessageStmt, err = db.PrepareContext(ctx, deleteMessage); err != nil {
+		return nil, fmt.Errorf("error preparing query DeleteMessage: %w", err)
 	}
 	if q.deleteUserStmt, err = db.PrepareContext(ctx, deleteUser); err != nil {
 		return nil, fmt.Errorf("error preparing query DeleteUser: %w", err)
@@ -39,11 +45,20 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getFriendShipStmt, err = db.PrepareContext(ctx, getFriendShip); err != nil {
 		return nil, fmt.Errorf("error preparing query GetFriendShip: %w", err)
 	}
+	if q.getMessageStmt, err = db.PrepareContext(ctx, getMessage); err != nil {
+		return nil, fmt.Errorf("error preparing query GetMessage: %w", err)
+	}
 	if q.getUserStmt, err = db.PrepareContext(ctx, getUser); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUser: %w", err)
 	}
+	if q.getUserForUpdateStmt, err = db.PrepareContext(ctx, getUserForUpdate); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUserForUpdate: %w", err)
+	}
 	if q.listFriendShipStmt, err = db.PrepareContext(ctx, listFriendShip); err != nil {
 		return nil, fmt.Errorf("error preparing query ListFriendShip: %w", err)
+	}
+	if q.listMessageStmt, err = db.PrepareContext(ctx, listMessage); err != nil {
+		return nil, fmt.Errorf("error preparing query ListMessage: %w", err)
 	}
 	if q.listUserStmt, err = db.PrepareContext(ctx, listUser); err != nil {
 		return nil, fmt.Errorf("error preparing query ListUser: %w", err)
@@ -51,8 +66,8 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.updateFriendShipStmt, err = db.PrepareContext(ctx, updateFriendShip); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateFriendShip: %w", err)
 	}
-	if q.updateUserAvatarStmt, err = db.PrepareContext(ctx, updateUserAvatar); err != nil {
-		return nil, fmt.Errorf("error preparing query UpdateUserAvatar: %w", err)
+	if q.updateUserStmt, err = db.PrepareContext(ctx, updateUser); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateUser: %w", err)
 	}
 	return &q, nil
 }
@@ -62,6 +77,11 @@ func (q *Queries) Close() error {
 	if q.createFriendShipStmt != nil {
 		if cerr := q.createFriendShipStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing createFriendShipStmt: %w", cerr)
+		}
+	}
+	if q.createMessageStmt != nil {
+		if cerr := q.createMessageStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing createMessageStmt: %w", cerr)
 		}
 	}
 	if q.createUserStmt != nil {
@@ -74,6 +94,11 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing deleteFriendShipStmt: %w", cerr)
 		}
 	}
+	if q.deleteMessageStmt != nil {
+		if cerr := q.deleteMessageStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing deleteMessageStmt: %w", cerr)
+		}
+	}
 	if q.deleteUserStmt != nil {
 		if cerr := q.deleteUserStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing deleteUserStmt: %w", cerr)
@@ -84,14 +109,29 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getFriendShipStmt: %w", cerr)
 		}
 	}
+	if q.getMessageStmt != nil {
+		if cerr := q.getMessageStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getMessageStmt: %w", cerr)
+		}
+	}
 	if q.getUserStmt != nil {
 		if cerr := q.getUserStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getUserStmt: %w", cerr)
 		}
 	}
+	if q.getUserForUpdateStmt != nil {
+		if cerr := q.getUserForUpdateStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUserForUpdateStmt: %w", cerr)
+		}
+	}
 	if q.listFriendShipStmt != nil {
 		if cerr := q.listFriendShipStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing listFriendShipStmt: %w", cerr)
+		}
+	}
+	if q.listMessageStmt != nil {
+		if cerr := q.listMessageStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing listMessageStmt: %w", cerr)
 		}
 	}
 	if q.listUserStmt != nil {
@@ -104,9 +144,9 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing updateFriendShipStmt: %w", cerr)
 		}
 	}
-	if q.updateUserAvatarStmt != nil {
-		if cerr := q.updateUserAvatarStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing updateUserAvatarStmt: %w", cerr)
+	if q.updateUserStmt != nil {
+		if cerr := q.updateUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateUserStmt: %w", cerr)
 		}
 	}
 	return err
@@ -149,15 +189,20 @@ type Queries struct {
 	db                   DBTX
 	tx                   *sql.Tx
 	createFriendShipStmt *sql.Stmt
+	createMessageStmt    *sql.Stmt
 	createUserStmt       *sql.Stmt
 	deleteFriendShipStmt *sql.Stmt
+	deleteMessageStmt    *sql.Stmt
 	deleteUserStmt       *sql.Stmt
 	getFriendShipStmt    *sql.Stmt
+	getMessageStmt       *sql.Stmt
 	getUserStmt          *sql.Stmt
+	getUserForUpdateStmt *sql.Stmt
 	listFriendShipStmt   *sql.Stmt
+	listMessageStmt      *sql.Stmt
 	listUserStmt         *sql.Stmt
 	updateFriendShipStmt *sql.Stmt
-	updateUserAvatarStmt *sql.Stmt
+	updateUserStmt       *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
@@ -165,14 +210,19 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		db:                   tx,
 		tx:                   tx,
 		createFriendShipStmt: q.createFriendShipStmt,
+		createMessageStmt:    q.createMessageStmt,
 		createUserStmt:       q.createUserStmt,
 		deleteFriendShipStmt: q.deleteFriendShipStmt,
+		deleteMessageStmt:    q.deleteMessageStmt,
 		deleteUserStmt:       q.deleteUserStmt,
 		getFriendShipStmt:    q.getFriendShipStmt,
+		getMessageStmt:       q.getMessageStmt,
 		getUserStmt:          q.getUserStmt,
+		getUserForUpdateStmt: q.getUserForUpdateStmt,
 		listFriendShipStmt:   q.listFriendShipStmt,
+		listMessageStmt:      q.listMessageStmt,
 		listUserStmt:         q.listUserStmt,
 		updateFriendShipStmt: q.updateFriendShipStmt,
-		updateUserAvatarStmt: q.updateUserAvatarStmt,
+		updateUserStmt:       q.updateUserStmt,
 	}
 }

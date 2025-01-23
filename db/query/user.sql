@@ -14,16 +14,22 @@ INSERT INTO "user"(
 SELECT * FROM "user"
 WHERE id = $1 LIMIT 1;
 
+-- name: GetUserForUpdate :one
+SELECT * FROM "user"
+WHERE id = $1 LIMIT 1
+FOR NO KEY UPDATE ;
+
 -- name: ListUser :many
 SELECT * FROM "user"
 ORDER BY id
 LIMIT $1
 OFFSET $2;
 
--- name: UpdateUserAvatar :exec
+-- name: UpdateUser :one
 UPDATE "user"
-SET "avatarURL" = $1
-WHERE id = $2;
+SET name = $1,password = $2, nickname = $3, "avatarURL" = $4, "friendCount" = $5, friends = $6
+WHERE id = $7
+RETURNING *;
 
 -- name: DeleteUser :exec
 DELETE FROM "user"

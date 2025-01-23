@@ -110,10 +110,11 @@ func (q *Queries) ListFriendShip(ctx context.Context, arg ListFriendShipParams) 
 	return items, nil
 }
 
-const updateFriendShip = `-- name: UpdateFriendShip :exec
+const updateFriendShip = `-- name: UpdateFriendShip :one
 UPDATE "friendship"
 SET "status" = $1
 WHERE id = $2
+RETURNING id, "fromId", "toId", status, "createAt", "updateAt"
 `
 
 type UpdateFriendShipParams struct {
@@ -121,7 +122,16 @@ type UpdateFriendShipParams struct {
 	ID     int64 `json:"id"`
 }
 
-func (q *Queries) UpdateFriendShip(ctx context.Context, arg UpdateFriendShipParams) error {
-	_, err := q.exec(ctx, q.updateFriendShipStmt, updateFriendShip, arg.Status, arg.ID)
-	return err
+func (q *Queries) UpdateFriendShip(ctx context.Context, arg UpdateFriendShipParams) (Friendship, error) {
+	row := q.queryRow(ctx, q.updateFriendShipStmt, updateFriendShip, arg.Status, arg.ID)
+	var i Friendship
+	err := row.Scan(
+		&i.ID,
+		&i.FromId,
+		&i.ToId,
+		&i.Status,
+		&i.CreateAt,
+		&i.UpdateAt,
+	)
+	return i, err
 }

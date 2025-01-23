@@ -17,10 +17,11 @@ ORDER BY id
 LIMIT $1
 OFFSET $2;
 
--- name: UpdateFriendShip :exec
+-- name: UpdateFriendShip :one
 UPDATE "friendship"
 SET "status" = $1
-WHERE id = $2;
+WHERE id = $2
+RETURNING *;
 
 -- name: DeleteFriendShip :exec
 DELETE FROM "friendship"

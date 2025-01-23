@@ -10,15 +10,20 @@ import (
 
 type Querier interface {
 	CreateFriendShip(ctx context.Context, arg CreateFriendShipParams) (Friendship, error)
+	CreateMessage(ctx context.Context, arg CreateMessageParams) (Message, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteFriendShip(ctx context.Context, id int64) error
+	DeleteMessage(ctx context.Context, id int64) error
 	DeleteUser(ctx context.Context, id int64) error
 	GetFriendShip(ctx context.Context, id int64) (Friendship, error)
+	GetMessage(ctx context.Context, id int64) (Message, error)
 	GetUser(ctx context.Context, id int64) (User, error)
+	GetUserForUpdate(ctx context.Context, id int64) (User, error)
 	ListFriendShip(ctx context.Context, arg ListFriendShipParams) ([]Friendship, error)
+	ListMessage(ctx context.Context, arg ListMessageParams) ([]Message, error)
 	ListUser(ctx context.Context, arg ListUserParams) ([]User, error)
-	UpdateFriendShip(ctx context.Context, arg UpdateFriendShipParams) error
-	UpdateUserAvatar(ctx context.Context, arg UpdateUserAvatarParams) error
+	UpdateFriendShip(ctx context.Context, arg UpdateFriendShipParams) (Friendship, error)
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)

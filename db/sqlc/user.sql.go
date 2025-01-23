@@ -89,6 +89,29 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
 	return i, err
 }
 
+const getUserForUpdate = `-- name: GetUserForUpdate :one
+SELECT id, name, password, nickname, "avatarURL", "friendCount", friends, "createAt", "updateAt" FROM "user"
+WHERE id = $1 LIMIT 1
+FOR NO KEY UPDATE
+`
+
+func (q *Queries) GetUserForUpdate(ctx context.Context, id int64) (User, error) {
+	row := q.queryRow(ctx, q.getUserForUpdateStmt, getUserForUpdate, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Password,
+		&i.Nickname,
+		&i.AvatarURL,
+		&i.FriendCount,
+		pq.Array(&i.Friends),
+		&i.CreateAt,
+		&i.UpdateAt,
+	)
+	return i, err
+}
+
 const listUser = `-- name: ListUser :many
 SELECT id, name, password, nickname, "avatarURL", "friendCount", friends, "createAt", "updateAt" FROM "user"
 ORDER BY id
@@ -134,18 +157,44 @@ func (q *Queries) ListUser(ctx context.Context, arg ListUserParams) ([]User, err
 	return items, nil
 }
 
-const updateUserAvatar = `-- name: UpdateUserAvatar :exec
+const updateUser = `-- name: UpdateUser :one
 UPDATE "user"
-SET "avatarURL" = $1
-WHERE id = $2
+SET name = $1,password = $2, nickname = $3, "avatarURL" = $4, "friendCount" = $5, friends = $6
+WHERE id = $7
+RETURNING id, name, password, nickname, "avatarURL", "friendCount", friends, "createAt", "updateAt"
 `
 
-type UpdateUserAvatarParams struct {
-	AvatarURL string `json:"avatarURL"`
-	ID        int64  `json:"id"`
+type UpdateUserParams struct {
+	Name        string  `json:"name"`
+	Password    string  `json:"password"`
+	Nickname    string  `json:"nickname"`
+	AvatarURL   string  `json:"avatarURL"`
+	FriendCount int32   `json:"friendCount"`
+	Friends     []int64 `json:"friends"`
+	ID          int64   `json:"id"`
 }
 
-func (q *Queries) UpdateUserAvatar(ctx context.Context, arg UpdateUserAvatarParams) error {
-	_, err := q.exec(ctx, q.updateUserAvatarStmt, updateUserAvatar, arg.AvatarURL, arg.ID)
-	return err
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.queryRow(ctx, q.updateUserStmt, updateUser,
+		arg.Name,
+		arg.Password,
+		arg.Nickname,
+		arg.AvatarURL,
+		arg.FriendCount,
+		pq.Array(arg.Friends),
+		arg.ID,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Password,
+		&i.Nickname,
+		&i.AvatarURL,
+		&i.FriendCount,
+		pq.Array(&i.Friends),
+		&i.CreateAt,
+		&i.UpdateAt,
+	)
+	return i, err
 }
