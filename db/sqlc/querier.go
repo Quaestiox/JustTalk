@@ -18,6 +18,7 @@ type Querier interface {
 	GetFriendShip(ctx context.Context, id int64) (Friendship, error)
 	GetMessage(ctx context.Context, id int64) (Message, error)
 	GetUser(ctx context.Context, id int64) (User, error)
+	GetUserByName(ctx context.Context, name string) (User, error)
 	GetUserForUpdate(ctx context.Context, id int64) (User, error)
 	ListFriendShip(ctx context.Context, arg ListFriendShipParams) ([]Friendship, error)
 	ListMessage(ctx context.Context, arg ListMessageParams) ([]Message, error)

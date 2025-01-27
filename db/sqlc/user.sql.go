@@ -89,6 +89,28 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
 	return i, err
 }
 
+const getUserByName = `-- name: GetUserByName :one
+SELECT id, name, password, nickname, "avatarURL", "friendCount", friends, "createAt", "updateAt" FROM "user"
+WHERE name = $1 LIMIT 1
+`
+
+func (q *Queries) GetUserByName(ctx context.Context, name string) (User, error) {
+	row := q.queryRow(ctx, q.getUserByNameStmt, getUserByName, name)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Password,
+		&i.Nickname,
+		&i.AvatarURL,
+		&i.FriendCount,
+		pq.Array(&i.Friends),
+		&i.CreateAt,
+		&i.UpdateAt,
+	)
+	return i, err
+}
+
 const getUserForUpdate = `-- name: GetUserForUpdate :one
 SELECT id, name, password, nickname, "avatarURL", "friendCount", friends, "createAt", "updateAt" FROM "user"
 WHERE id = $1 LIMIT 1
@@ -130,7 +152,7 @@ func (q *Queries) ListUser(ctx context.Context, arg ListUserParams) ([]User, err
 		return nil, err
 	}
 	defer rows.Close()
-	var items []User
+	items := []User{}
 	for rows.Next() {
 		var i User
 		if err := rows.Scan(

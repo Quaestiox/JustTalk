@@ -14,6 +14,11 @@ INSERT INTO "user"(
 SELECT * FROM "user"
 WHERE id = $1 LIMIT 1;
 
+-- name: GetUserByName :one
+SELECT * FROM "user"
+WHERE name = $1 LIMIT 1;
+
+
 -- name: GetUserForUpdate :one
 SELECT * FROM "user"
 WHERE id = $1 LIMIT 1

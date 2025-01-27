@@ -70,23 +70,25 @@ func (q *Queries) GetFriendShip(ctx context.Context, id int64) (Friendship, erro
 
 const listFriendShip = `-- name: ListFriendShip :many
 SELECT id, "fromId", "toId", status, "createAt", "updateAt" FROM "friendship"
+WHERE ("fromId" = $1) OR ("toId" = $1)
 ORDER BY id
-LIMIT $1
-OFFSET $2
+LIMIT $2
+OFFSET $3
 `
 
 type ListFriendShipParams struct {
+	FromId int64 `json:"fromId"`
 	Limit  int32 `json:"limit"`
 	Offset int32 `json:"offset"`
 }
 
 func (q *Queries) ListFriendShip(ctx context.Context, arg ListFriendShipParams) ([]Friendship, error) {
-	rows, err := q.query(ctx, q.listFriendShipStmt, listFriendShip, arg.Limit, arg.Offset)
+	rows, err := q.query(ctx, q.listFriendShipStmt, listFriendShip, arg.FromId, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Friendship
+	items := []Friendship{}
 	for rows.Next() {
 		var i Friendship
 		if err := rows.Scan(

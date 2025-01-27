@@ -51,6 +51,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getUserStmt, err = db.PrepareContext(ctx, getUser); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUser: %w", err)
 	}
+	if q.getUserByNameStmt, err = db.PrepareContext(ctx, getUserByName); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUserByName: %w", err)
+	}
 	if q.getUserForUpdateStmt, err = db.PrepareContext(ctx, getUserForUpdate); err != nil {
 		return nil, fmt.Errorf("error preparing query GetUserForUpdate: %w", err)
 	}
@@ -117,6 +120,11 @@ func (q *Queries) Close() error {
 	if q.getUserStmt != nil {
 		if cerr := q.getUserStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getUserStmt: %w", cerr)
+		}
+	}
+	if q.getUserByNameStmt != nil {
+		if cerr := q.getUserByNameStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUserByNameStmt: %w", cerr)
 		}
 	}
 	if q.getUserForUpdateStmt != nil {
@@ -197,6 +205,7 @@ type Queries struct {
 	getFriendShipStmt    *sql.Stmt
 	getMessageStmt       *sql.Stmt
 	getUserStmt          *sql.Stmt
+	getUserByNameStmt    *sql.Stmt
 	getUserForUpdateStmt *sql.Stmt
 	listFriendShipStmt   *sql.Stmt
 	listMessageStmt      *sql.Stmt
@@ -218,6 +227,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getFriendShipStmt:    q.getFriendShipStmt,
 		getMessageStmt:       q.getMessageStmt,
 		getUserStmt:          q.getUserStmt,
+		getUserByNameStmt:    q.getUserByNameStmt,
 		getUserForUpdateStmt: q.getUserForUpdateStmt,
 		listFriendShipStmt:   q.listFriendShipStmt,
 		listMessageStmt:      q.listMessageStmt,

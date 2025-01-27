@@ -21,7 +21,7 @@ type Message struct {
 	ID         int64     `json:"id"`
 	SenderId   int64     `json:"senderId"`
 	ReceiverId int64     `json:"receiverId"`
-	Context    string    `json:"context"`
+	Content    string    `json:"content"`
 	SendAt     time.Time `json:"sendAt"`
 }
 

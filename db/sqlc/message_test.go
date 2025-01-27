@@ -10,7 +10,7 @@ func TestCreateMessage(t *testing.T) {
 	arg := CreateMessageParams{
 		SenderId:   1,
 		ReceiverId: 2,
-		Context:    "Hello!",
+		Content:    "Hello!",
 	}
 
 	message, err := testQueries.CreateMessage(context.Background(), arg)
@@ -18,7 +18,7 @@ func TestCreateMessage(t *testing.T) {
 
 	require.Equal(t, message.SenderId, arg.SenderId)
 	require.Equal(t, message.ReceiverId, arg.ReceiverId)
-	require.Equal(t, message.Context, arg.Context)
+	require.Equal(t, message.Content, arg.Content)
 
 	require.NotZero(t, message.ID)
 	require.NotZero(t, message.SendAt)

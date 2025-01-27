@@ -2,7 +2,7 @@
 INSERT INTO "message"(
     "senderId",
     "receiverId",
-    context
+    content
 ) VALUES (
              $1, $2, $3
 ) RETURNING *;
@@ -13,9 +13,10 @@ WHERE id = $1 LIMIT 1;
 
 -- name: ListMessage :many
 SELECT * FROM "message"
+WHERE ("senderId" = $1) OR ("receiverId" = $1)
 ORDER BY id
-LIMIT $1
-OFFSET $2;
+LIMIT $2
+OFFSET $3;
 
 -- name: DeleteMessage :exec
 DELETE FROM "message"

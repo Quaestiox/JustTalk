@@ -13,9 +13,10 @@ WHERE id = $1 LIMIT 1;
 
 -- name: ListFriendShip :many
 SELECT * FROM "friendship"
+WHERE ("fromId" = $1) OR ("toId" = $1)
 ORDER BY id
-LIMIT $1
-OFFSET $2;
+LIMIT $2
+OFFSET $3;
 
 -- name: UpdateFriendShip :one
 UPDATE "friendship"
