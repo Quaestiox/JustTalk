@@ -8,9 +8,9 @@ import (
 
 func TestCmpText(t *testing.T) {
 	text := "hello world!"
-	encryptText, err := EncryptText(text)
+	encryptText, err := EncryptAES(text)
 	require.NoError(t, err)
 	fmt.Println(encryptText)
-	decryptText, err := DecryptText(encryptText)
+	decryptText, err := DecryptAES(encryptText)
 	require.Equal(t, decryptText, text)
 }

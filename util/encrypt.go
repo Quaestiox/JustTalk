@@ -4,69 +4,56 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"encoding/hex"
-	"fmt"
+	"encoding/base64"
 	"io"
 )
 
-const (
-	AESKey = "32-byte-long-key-123456789012345"
-)
+var key = []byte("01234567890123456789012345678901")
 
-func EncryptText(text string) (string, error) {
-	key := []byte(AESKey)
-	byteText := []byte(text)
-
-	ciphertext, err := encryptAES(key, byteText)
-	if err != nil {
-		return "", fmt.Errorf("encrypt errror:%w", err)
-
-	}
-	return hex.EncodeToString(ciphertext), nil
-}
-
-func DecryptText(ciphertext string) (string, error) {
-	key := []byte(AESKey)
-	decryptText, err := decryptAES(key, []byte(ciphertext))
-	if err != nil {
-		return "", fmt.Errorf("decrypt errror:%w", err)
-	}
-	return string(decryptText), nil
-}
-
-func encryptAES(key, plaintext []byte) ([]byte, error) {
+// AES-GCM 加密
+func EncryptAES(plaintext string) (string, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	ciphertext := make([]byte, aes.BlockSize+len(plaintext))
-	iv := ciphertext[:aes.BlockSize]
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-		return nil, err
+	nonce := make([]byte, 12) // GCM 建议使用 12 字节随机数
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		return "", err
 	}
 
-	stream := cipher.NewCFBEncrypter(block, iv)
-	stream.XORKeyStream(ciphertext[aes.BlockSize:], plaintext)
+	aesGCM, err := cipher.NewGCM(block)
+	if err != nil {
+		return "", err
+	}
 
-	return ciphertext, nil
+	ciphertext := aesGCM.Seal(nil, nonce, []byte(plaintext), nil)
+	return base64.StdEncoding.EncodeToString(append(nonce, ciphertext...)), nil
 }
 
-func decryptAES(key, ciphertext []byte) ([]byte, error) {
+// AES-GCM 解密
+func DecryptAES(encryptedText string) (string, error) {
+	data, err := base64.StdEncoding.DecodeString(encryptedText)
+	if err != nil {
+		return "", err
+	}
+
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	if len(ciphertext) < aes.BlockSize {
-		return nil, fmt.Errorf("密文太短")
+	aesGCM, err := cipher.NewGCM(block)
+	if err != nil {
+		return "", err
 	}
 
-	iv := ciphertext[:aes.BlockSize]
-	ciphertext = ciphertext[aes.BlockSize:]
+	nonce := data[:12]      // 取出 Nonce
+	ciphertext := data[12:] // 取出密文
+	plaintext, err := aesGCM.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		return "", err
+	}
 
-	stream := cipher.NewCFBDecrypter(block, iv)
-	stream.XORKeyStream(ciphertext, ciphertext)
-
-	return ciphertext, nil
+	return string(plaintext), nil
 }
