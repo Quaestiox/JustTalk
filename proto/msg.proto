@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Quaestiox/JustTalk_backend/pb";
+
+message Msg {
+  int64 id = 1;
+  int64 sender_id = 2;
+  int64 receiver_id = 3;
+  string content = 4;
+  google.protobuf.Timestamp send_at = 5;
+}

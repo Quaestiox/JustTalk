@@ -25,6 +25,7 @@ const (
 	JustTalk_UpdateUser_FullMethodName  = "/pb.JustTalk/UpdateUser"
 	JustTalk_DeleteUser_FullMethodName  = "/pb.JustTalk/DeleteUser"
 	JustTalk_GetUserInfo_FullMethodName = "/pb.JustTalk/GetUserInfo"
+	JustTalk_SendMessage_FullMethodName = "/pb.JustTalk/SendMessage"
 )
 
 // JustTalkClient is the client API for JustTalk service.
@@ -37,6 +38,7 @@ type JustTalkClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error)
+	SendMessage(ctx context.Context, in *CreateMsgRequest, opts ...grpc.CallOption) (*CreateMsgResponse, error)
 }
 
 type justTalkClient struct {
@@ -107,6 +109,16 @@ func (c *justTalkClient) GetUserInfo(ctx context.Context, in *GetUserInfoRequest
 	return out, nil
 }
 
+func (c *justTalkClient) SendMessage(ctx context.Context, in *CreateMsgRequest, opts ...grpc.CallOption) (*CreateMsgResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateMsgResponse)
+	err := c.cc.Invoke(ctx, JustTalk_SendMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JustTalkServer is the server API for JustTalk service.
 // All implementations must embed UnimplementedJustTalkServer
 // for forward compatibility.
@@ -117,6 +129,7 @@ type JustTalkServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error)
+	SendMessage(context.Context, *CreateMsgRequest) (*CreateMsgResponse, error)
 	mustEmbedUnimplementedJustTalkServer()
 }
 
@@ -144,6 +157,9 @@ func (UnimplementedJustTalkServer) DeleteUser(context.Context, *DeleteUserReques
 }
 func (UnimplementedJustTalkServer) GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserInfo not implemented")
+}
+func (UnimplementedJustTalkServer) SendMessage(context.Context, *CreateMsgRequest) (*CreateMsgResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
 }
 func (UnimplementedJustTalkServer) mustEmbedUnimplementedJustTalkServer() {}
 func (UnimplementedJustTalkServer) testEmbeddedByValue()                  {}
@@ -274,6 +290,24 @@ func _JustTalk_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JustTalk_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMsgRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JustTalkServer).SendMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: JustTalk_SendMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JustTalkServer).SendMessage(ctx, req.(*CreateMsgRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // JustTalk_ServiceDesc is the grpc.ServiceDesc for JustTalk service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -304,6 +338,10 @@ var JustTalk_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserInfo",
 			Handler:    _JustTalk_GetUserInfo_Handler,
+		},
+		{
+			MethodName: "SendMessage",
+			Handler:    _JustTalk_SendMessage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

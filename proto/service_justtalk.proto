@@ -9,6 +9,7 @@ import "rpc_update_user.proto";
 import "rpc_delete_user.proto";
 import "rpc_get_user_info.proto";
 import "user.proto";
+import "rpc_msg.proto";
 import "google/api/annotations.proto";
 
 
@@ -36,13 +37,18 @@ service JustTalk{
   }
   rpc DeleteUser(DeleteUserRequest) returns(DeleteUserResponse){
     option (google.api.http) = {
-      patch: "/v1/delete_user"
-      body: "*"
+      delete: "/v1/delete_user"
     };
   }
   rpc GetUserInfo(GetUserInfoRequest) returns(GetUserInfoResponse){
     option (google.api.http) = {
-      patch: "/v1/get_user_info"
+      get: "/v1/get_user_info"
+    };
+  }
+
+  rpc SendMessage(CreateMsgRequest) returns (CreateMsgResponse){
+    option(google.api.http) = {
+      post: "/v1/send_msg"
       body: "*"
     };
   }

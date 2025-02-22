@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "rpc_create_user.proto",
+    "title": "msg.proto",
     "version": "version not set"
   },
   "tags": [
@@ -49,7 +49,7 @@
       }
     },
     "/v1/delete_user": {
-      "patch": {
+      "delete": {
         "operationId": "JustTalk_DeleteUser",
         "responses": {
           "200": {
@@ -67,12 +67,11 @@
         },
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbDeleteUserRequest"
-            }
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
           }
         ],
         "tags": [
@@ -81,7 +80,7 @@
       }
     },
     "/v1/get_user_info": {
-      "patch": {
+      "get": {
         "operationId": "JustTalk_GetUserInfo",
         "responses": {
           "200": {
@@ -99,12 +98,11 @@
         },
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbGetUserInfoRequest"
-            }
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
           }
         ],
         "tags": [
@@ -136,6 +134,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/pbLoginUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "JustTalk"
+        ]
+      }
+    },
+    "/v1/send_msg": {
+      "post": {
+        "operationId": "JustTalk_SendMessage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateMsgResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateMsgRequest"
             }
           }
         ],
@@ -178,6 +208,26 @@
     }
   },
   "definitions": {
+    "pbCreateMsgRequest": {
+      "type": "object",
+      "properties": {
+        "receiverId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "content": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCreateMsgResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "$ref": "#/definitions/pbMsg"
+        }
+      }
+    },
     "pbCreateUserRequest": {
       "type": "object",
       "properties": {
@@ -239,29 +289,11 @@
         }
       }
     },
-    "pbDeleteUserRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "int64"
-        }
-      }
-    },
     "pbDeleteUserResponse": {
       "type": "object",
       "properties": {
         "response": {
           "type": "string"
-        }
-      }
-    },
-    "pbGetUserInfoRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "int64"
         }
       }
     },
@@ -292,6 +324,30 @@
         },
         "user": {
           "$ref": "#/definitions/pbUserResponse"
+        }
+      }
+    },
+    "pbMsg": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "senderId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "receiverId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "content": {
+          "type": "string"
+        },
+        "sendAt": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },

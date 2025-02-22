@@ -60,4 +60,23 @@ client:
 redis:
 	docker run --name redis -p 6380:6379 -d redis:latest
 
-.PHONY: postgres createdb dropdb stop_rm_postgres migrateup migratedown migrateversion migrateforce1 sqlc proto-l proto-w evans client redis
+rabbitmq:
+	docker run -it --name rabbitmq \
+  	-p 5672:5672 -p 15672:15672 \
+	-v rabbitmq_data:/var/lib/rabbitmq \
+	rabbitmq:4.0-management
+simple-pub:
+	go run ./mq_test/simple_mod/simple_publish/publish.go
+
+simple-rec:
+	go run ./mq_test/simple_mod/simple_recieve/recieve.go
+
+work-pub:
+	go run ./mq_test/work_mod/producer/producer.go
+
+work-rec:
+	go run ./mq_test/work_mod/worker/worker.go
+
+.PHONY: postgres createdb dropdb stop_rm_postgres migrateup migratedown migrateversion migrateforce1 \
+	sqlc proto-l proto-w evans client redis rabbitmq\
+	simple-pub simple-rec
