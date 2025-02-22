@@ -11,27 +11,27 @@ import (
 
 const createFriendShip = `-- name: CreateFriendShip :one
 INSERT INTO "friendship"(
-                       "fromId",
-                       "toId",
+                       "from_id",
+                       "to_id",
                        status
 ) VALUES (
     $1, $2, $3
-) RETURNING id, "fromId", "toId", status, "createAt", "updateAt"
+) RETURNING id, from_id, to_id, status, create_at, update_at
 `
 
 type CreateFriendShipParams struct {
-	FromId int64 `json:"fromId"`
-	ToId   int64 `json:"toId"`
+	FromID int64 `json:"from_id"`
+	ToID   int64 `json:"to_id"`
 	Status int16 `json:"status"`
 }
 
 func (q *Queries) CreateFriendShip(ctx context.Context, arg CreateFriendShipParams) (Friendship, error) {
-	row := q.queryRow(ctx, q.createFriendShipStmt, createFriendShip, arg.FromId, arg.ToId, arg.Status)
+	row := q.queryRow(ctx, q.createFriendShipStmt, createFriendShip, arg.FromID, arg.ToID, arg.Status)
 	var i Friendship
 	err := row.Scan(
 		&i.ID,
-		&i.FromId,
-		&i.ToId,
+		&i.FromID,
+		&i.ToID,
 		&i.Status,
 		&i.CreateAt,
 		&i.UpdateAt,
@@ -50,7 +50,7 @@ func (q *Queries) DeleteFriendShip(ctx context.Context, id int64) error {
 }
 
 const getFriendShip = `-- name: GetFriendShip :one
-SELECT id, "fromId", "toId", status, "createAt", "updateAt" FROM "friendship"
+SELECT id, from_id, to_id, status, create_at, update_at FROM "friendship"
 WHERE id = $1 LIMIT 1
 `
 
@@ -59,8 +59,8 @@ func (q *Queries) GetFriendShip(ctx context.Context, id int64) (Friendship, erro
 	var i Friendship
 	err := row.Scan(
 		&i.ID,
-		&i.FromId,
-		&i.ToId,
+		&i.FromID,
+		&i.ToID,
 		&i.Status,
 		&i.CreateAt,
 		&i.UpdateAt,
@@ -69,21 +69,21 @@ func (q *Queries) GetFriendShip(ctx context.Context, id int64) (Friendship, erro
 }
 
 const listFriendShip = `-- name: ListFriendShip :many
-SELECT id, "fromId", "toId", status, "createAt", "updateAt" FROM "friendship"
-WHERE ("fromId" = $1) OR ("toId" = $1)
+SELECT id, from_id, to_id, status, create_at, update_at FROM "friendship"
+WHERE ("from_id" = $1) OR ("to_id" = $1)
 ORDER BY id
 LIMIT $2
 OFFSET $3
 `
 
 type ListFriendShipParams struct {
-	FromId int64 `json:"fromId"`
+	FromID int64 `json:"from_id"`
 	Limit  int32 `json:"limit"`
 	Offset int32 `json:"offset"`
 }
 
 func (q *Queries) ListFriendShip(ctx context.Context, arg ListFriendShipParams) ([]Friendship, error) {
-	rows, err := q.query(ctx, q.listFriendShipStmt, listFriendShip, arg.FromId, arg.Limit, arg.Offset)
+	rows, err := q.query(ctx, q.listFriendShipStmt, listFriendShip, arg.FromID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -93,8 +93,8 @@ func (q *Queries) ListFriendShip(ctx context.Context, arg ListFriendShipParams) 
 		var i Friendship
 		if err := rows.Scan(
 			&i.ID,
-			&i.FromId,
-			&i.ToId,
+			&i.FromID,
+			&i.ToID,
 			&i.Status,
 			&i.CreateAt,
 			&i.UpdateAt,
@@ -116,7 +116,7 @@ const updateFriendShip = `-- name: UpdateFriendShip :one
 UPDATE "friendship"
 SET "status" = $1
 WHERE id = $2
-RETURNING id, "fromId", "toId", status, "createAt", "updateAt"
+RETURNING id, from_id, to_id, status, create_at, update_at
 `
 
 type UpdateFriendShipParams struct {
@@ -129,8 +129,8 @@ func (q *Queries) UpdateFriendShip(ctx context.Context, arg UpdateFriendShipPara
 	var i Friendship
 	err := row.Scan(
 		&i.ID,
-		&i.FromId,
-		&i.ToId,
+		&i.FromID,
+		&i.ToID,
 		&i.Status,
 		&i.CreateAt,
 		&i.UpdateAt,

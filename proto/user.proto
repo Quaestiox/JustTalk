@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Quaestiox/JustTalk_backend/pb";
+
+message User{
+  int64 id = 1;
+  string name = 2;
+  string password = 3;
+  string nickname = 4;
+  string avatar_url = 5;
+  int32 friend_count = 6;
+  repeated int64 friends = 7;
+  google.protobuf.Timestamp create_at = 8;
+  google.protobuf.Timestamp update_at = 9;
+
+}
+
+message UserResponse{
+  int64 id = 1;
+  string name = 2;
+  string nickname = 3;
+  string avatar_url = 4;
+  int32 friend_count = 5;
+  repeated int64 friends = 6;
+  google.protobuf.Timestamp create_at = 7;
+  google.protobuf.Timestamp update_at = 8;
+}

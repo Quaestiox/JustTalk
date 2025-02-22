@@ -10,19 +10,19 @@ import (
 
 type Friendship struct {
 	ID       int64     `json:"id"`
-	FromId   int64     `json:"fromId"`
-	ToId     int64     `json:"toId"`
+	FromID   int64     `json:"from_id"`
+	ToID     int64     `json:"to_id"`
 	Status   int16     `json:"status"`
-	CreateAt time.Time `json:"createAt"`
-	UpdateAt time.Time `json:"updateAt"`
+	CreateAt time.Time `json:"create_at"`
+	UpdateAt time.Time `json:"update_at"`
 }
 
 type Message struct {
 	ID         int64     `json:"id"`
-	SenderId   int64     `json:"senderId"`
-	ReceiverId int64     `json:"receiverId"`
+	SenderID   int64     `json:"sender_id"`
+	ReceiverID int64     `json:"receiver_id"`
 	Content    string    `json:"content"`
-	SendAt     time.Time `json:"sendAt"`
+	SendAt     time.Time `json:"send_at"`
 }
 
 type User struct {
@@ -30,9 +30,9 @@ type User struct {
 	Name        string    `json:"name"`
 	Password    string    `json:"password"`
 	Nickname    string    `json:"nickname"`
-	AvatarURL   string    `json:"avatarURL"`
-	FriendCount int32     `json:"friendCount"`
+	AvatarUrl   string    `json:"avatar_url"`
+	FriendCount int32     `json:"friend_count"`
 	Friends     []int64   `json:"friends"`
-	CreateAt    time.Time `json:"createAt"`
-	UpdateAt    time.Time `json:"updateAt"`
+	CreateAt    time.Time `json:"create_at"`
+	UpdateAt    time.Time `json:"update_at"`
 }

@@ -10,7 +10,7 @@ import (
 )
 
 type createMessageRequest struct {
-	ReceiverId int64  `json:"receiver_id" binding:"required,min=1"`
+	ReceiverID int64  `json:"receiver_id" binding:"required,min=1"`
 	Content    string `json:"content" binding:"required"`
 }
 
@@ -24,8 +24,8 @@ func (server *Server) CreateMessage(ctx *gin.Context) {
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*util.Payload)
 
 	arg := db.CreateMessageParams{
-		SenderId:   authPayload.UserID,
-		ReceiverId: req.ReceiverId,
+		SenderID:   authPayload.UserID,
+		ReceiverID: req.ReceiverID,
 		Content:    req.Content,
 	}
 
@@ -60,7 +60,7 @@ func (server *Server) getMessage(ctx *gin.Context) {
 	}
 
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*util.Payload)
-	if message.SenderId != authPayload.UserID && message.ReceiverId != authPayload.UserID {
+	if message.SenderID != authPayload.UserID && message.ReceiverID != authPayload.UserID {
 		err := errors.New("message doesn't relate to the authenticated user")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
@@ -84,7 +84,7 @@ func (server *Server) listMessage(ctx *gin.Context) {
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*util.Payload)
 
 	arg := db.ListMessageParams{
-		SenderId: authPayload.UserID,
+		SenderID: authPayload.UserID,
 		Limit:    req.PageSize,
 		Offset:   (req.PageID - 1) * req.PageSize,
 	}

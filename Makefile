@@ -1,5 +1,5 @@
 postgres:
-	docker run --name postgres -p 5433:5432 -e POSTGRES USER=root -e POSTGRES PASSWORD=123567 -d postgres
+	docker run --name postgres -p 5433:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=123567 -d postgres
 
 createdb:
 	docker exec -it postgres createdb --username=root --owner=root justtalk
@@ -32,5 +32,32 @@ test:
 server:
 	go run main.go
 
+proto-w:
+	del /F /Q pb\*.go
+	del /F /Q doc\swagger\*.swagger.json
+	protoc --proto_path=proto --proto_path=include --go_out=pb --go_opt=paths=source_relative \
+	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
+	--openapiv2_out=doc/swagger --openapiv2_opt=allow_merge=true,merge_file_name=justtalk \
+	proto/*.proto
 
-.PHONY: postgres createdb dropdb stop_rm_postgres migrateup migratedown migrateversion migrateforce1 sqlc
+
+proto-l:
+	rm -f pb/*.go
+	rm -f doc/swagger/*.swagger.json
+	protoc --proto_path=proto --proto_path=include --go_out=pb --go_opt=paths=source_relative \
+	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
+	--openapiv2_out=doc/swagger \
+	proto/*.proto
+
+evans:
+	evans --host localhost --port 9101 -r repl
+
+client:
+	go run ./client/main.go
+
+redis:
+	docker run --name redis -p 6380:6379 -d redis:latest
+
+.PHONY: postgres createdb dropdb stop_rm_postgres migrateup migratedown migrateversion migrateforce1 sqlc proto-l proto-w evans client redis

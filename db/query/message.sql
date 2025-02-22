@@ -1,7 +1,7 @@
 -- name: CreateMessage :one
 INSERT INTO "message"(
-    "senderId",
-    "receiverId",
+    "sender_id",
+    "receiver_id",
     content
 ) VALUES (
              $1, $2, $3
@@ -13,7 +13,7 @@ WHERE id = $1 LIMIT 1;
 
 -- name: ListMessage :many
 SELECT * FROM "message"
-WHERE ("senderId" = $1) OR ("receiverId" = $1)
+WHERE ("sender_id" = $1) OR ("receiver_id" = $1)
 ORDER BY id
 LIMIT $2
 OFFSET $3;

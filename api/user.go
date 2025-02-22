@@ -33,7 +33,7 @@ func newUserResponse(user db.User) userResponse {
 		ID:          user.ID,
 		Name:        user.Name,
 		Nickname:    user.Nickname,
-		AvatarURL:   user.AvatarURL,
+		AvatarURL:   user.AvatarUrl,
 		FriendCount: user.FriendCount,
 		Friends:     user.Friends,
 		CreateAt:    user.CreateAt,
@@ -54,7 +54,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 		Name:      req.Name,
 		Password:  hashedPd,
 		Nickname:  req.Nickname,
-		AvatarURL: req.AvatarURL,
+		AvatarUrl: req.AvatarURL,
 		Friends:   req.Friends,
 	}
 

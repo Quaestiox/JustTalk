@@ -55,8 +55,8 @@ func (store *Store) FriendshipTx(ctx context.Context, arg FriendshipTxParams) (F
 		var err error
 
 		result.Friendship, err = q.CreateFriendShip(ctx, CreateFriendShipParams{
-			FromId: arg.FromUserId,
-			ToId:   arg.ToUserId,
+			FromID: arg.FromUserId,
+			ToID:   arg.ToUserId,
 			Status: arg.Status,
 		})
 		if err != nil {

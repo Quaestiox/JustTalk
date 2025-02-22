@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/lib/pq"
 )
@@ -16,20 +17,20 @@ INSERT INTO "user"(
                  name,
                  password,
                  nickname,
-                 "avatarURL",
-                 "friendCount",
+                 "avatar_url",
+                 "friend_count",
                  friends
 ) VALUES (
     $1, $2, $3, $4, $5, $6
-) RETURNING id, name, password, nickname, "avatarURL", "friendCount", friends, "createAt", "updateAt"
+) RETURNING id, name, password, nickname, avatar_url, friend_count, friends, create_at, update_at
 `
 
 type CreateUserParams struct {
 	Name        string  `json:"name"`
 	Password    string  `json:"password"`
 	Nickname    string  `json:"nickname"`
-	AvatarURL   string  `json:"avatarURL"`
-	FriendCount int32   `json:"friendCount"`
+	AvatarUrl   string  `json:"avatar_url"`
+	FriendCount int32   `json:"friend_count"`
 	Friends     []int64 `json:"friends"`
 }
 
@@ -38,7 +39,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Name,
 		arg.Password,
 		arg.Nickname,
-		arg.AvatarURL,
+		arg.AvatarUrl,
 		arg.FriendCount,
 		pq.Array(arg.Friends),
 	)
@@ -48,7 +49,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Name,
 		&i.Password,
 		&i.Nickname,
-		&i.AvatarURL,
+		&i.AvatarUrl,
 		&i.FriendCount,
 		pq.Array(&i.Friends),
 		&i.CreateAt,
@@ -68,7 +69,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id int64) error {
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, name, password, nickname, "avatarURL", "friendCount", friends, "createAt", "updateAt" FROM "user"
+SELECT id, name, password, nickname, avatar_url, friend_count, friends, create_at, update_at FROM "user"
 WHERE id = $1 LIMIT 1
 `
 
@@ -80,7 +81,7 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
 		&i.Name,
 		&i.Password,
 		&i.Nickname,
-		&i.AvatarURL,
+		&i.AvatarUrl,
 		&i.FriendCount,
 		pq.Array(&i.Friends),
 		&i.CreateAt,
@@ -90,7 +91,7 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
 }
 
 const getUserByName = `-- name: GetUserByName :one
-SELECT id, name, password, nickname, "avatarURL", "friendCount", friends, "createAt", "updateAt" FROM "user"
+SELECT id, name, password, nickname, avatar_url, friend_count, friends, create_at, update_at FROM "user"
 WHERE name = $1 LIMIT 1
 `
 
@@ -102,7 +103,7 @@ func (q *Queries) GetUserByName(ctx context.Context, name string) (User, error) 
 		&i.Name,
 		&i.Password,
 		&i.Nickname,
-		&i.AvatarURL,
+		&i.AvatarUrl,
 		&i.FriendCount,
 		pq.Array(&i.Friends),
 		&i.CreateAt,
@@ -112,7 +113,7 @@ func (q *Queries) GetUserByName(ctx context.Context, name string) (User, error) 
 }
 
 const getUserForUpdate = `-- name: GetUserForUpdate :one
-SELECT id, name, password, nickname, "avatarURL", "friendCount", friends, "createAt", "updateAt" FROM "user"
+SELECT id, name, password, nickname, avatar_url, friend_count, friends, create_at, update_at FROM "user"
 WHERE id = $1 LIMIT 1
 FOR NO KEY UPDATE
 `
@@ -125,7 +126,7 @@ func (q *Queries) GetUserForUpdate(ctx context.Context, id int64) (User, error) 
 		&i.Name,
 		&i.Password,
 		&i.Nickname,
-		&i.AvatarURL,
+		&i.AvatarUrl,
 		&i.FriendCount,
 		pq.Array(&i.Friends),
 		&i.CreateAt,
@@ -135,7 +136,7 @@ func (q *Queries) GetUserForUpdate(ctx context.Context, id int64) (User, error) 
 }
 
 const listUser = `-- name: ListUser :many
-SELECT id, name, password, nickname, "avatarURL", "friendCount", friends, "createAt", "updateAt" FROM "user"
+SELECT id, name, password, nickname, avatar_url, friend_count, friends, create_at, update_at FROM "user"
 ORDER BY id
 LIMIT $1
 OFFSET $2
@@ -160,7 +161,7 @@ func (q *Queries) ListUser(ctx context.Context, arg ListUserParams) ([]User, err
 			&i.Name,
 			&i.Password,
 			&i.Nickname,
-			&i.AvatarURL,
+			&i.AvatarUrl,
 			&i.FriendCount,
 			pq.Array(&i.Friends),
 			&i.CreateAt,
@@ -181,19 +182,24 @@ func (q *Queries) ListUser(ctx context.Context, arg ListUserParams) ([]User, err
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE "user"
-SET name = $1,password = $2, nickname = $3, "avatarURL" = $4, "friendCount" = $5, friends = $6
+SET name = COALESCE($1, name),
+    password = COALESCE($2, password),
+    nickname = COALESCE($3, nickname),
+    avatar_url = COALESCE($4, avatar_url),
+    friend_count = COALESCE($5, friend_count),
+    friends = COALESCE($6, friends)
 WHERE id = $7
-RETURNING id, name, password, nickname, "avatarURL", "friendCount", friends, "createAt", "updateAt"
+RETURNING id, name, password, nickname, avatar_url, friend_count, friends, create_at, update_at
 `
 
 type UpdateUserParams struct {
-	Name        string  `json:"name"`
-	Password    string  `json:"password"`
-	Nickname    string  `json:"nickname"`
-	AvatarURL   string  `json:"avatarURL"`
-	FriendCount int32   `json:"friendCount"`
-	Friends     []int64 `json:"friends"`
-	ID          int64   `json:"id"`
+	Name        sql.NullString `json:"name"`
+	Password    sql.NullString `json:"password"`
+	Nickname    sql.NullString `json:"nickname"`
+	AvatarUrl   sql.NullString `json:"avatar_url"`
+	FriendCount sql.NullInt32  `json:"friend_count"`
+	Friends     []int64        `json:"friends"`
+	ID          int64          `json:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
@@ -201,7 +207,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		arg.Name,
 		arg.Password,
 		arg.Nickname,
-		arg.AvatarURL,
+		arg.AvatarUrl,
 		arg.FriendCount,
 		pq.Array(arg.Friends),
 		arg.ID,
@@ -212,7 +218,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Name,
 		&i.Password,
 		&i.Nickname,
-		&i.AvatarURL,
+		&i.AvatarUrl,
 		&i.FriendCount,
 		pq.Array(&i.Friends),
 		&i.CreateAt,

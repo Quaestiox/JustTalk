@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "rpc_create_user.proto";
+import "rpc_login_user.proto";
+import "rpc_update_user.proto";
+import "rpc_delete_user.proto";
+import "rpc_get_user_info.proto";
+import "user.proto";
+import "google/api/annotations.proto";
+
+
+option go_package = "github.com/Quaestiox/JustTalk_backend/pb";
+
+service JustTalk{
+  rpc SayHello(SayHelloRequest) returns (SayHelloResponse){}
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse){
+    option (google.api.http) = {
+      post: "/v1/create_user"
+      body:"*"
+    };
+  }
+  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse){
+    option (google.api.http) = {
+      post: "/v1/login_user"
+      body:"*"
+    };
+  }
+  rpc UpdateUser(UpdateUserRequest) returns(UpdateUserResponse){
+    option (google.api.http) = {
+      patch: "/v1/update_user"
+      body: "*"
+    };
+  }
+  rpc DeleteUser(DeleteUserRequest) returns(DeleteUserResponse){
+    option (google.api.http) = {
+      patch: "/v1/delete_user"
+      body: "*"
+    };
+  }
+  rpc GetUserInfo(GetUserInfoRequest) returns(GetUserInfoResponse){
+    option (google.api.http) = {
+      patch: "/v1/get_user_info"
+      body: "*"
+    };
+  }
+}
+
+message SayHelloRequest{
+  string name = 1;
+}
+
+message SayHelloResponse{
+  string answer = 1;
+}

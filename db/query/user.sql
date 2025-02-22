@@ -3,8 +3,8 @@ INSERT INTO "user"(
                  name,
                  password,
                  nickname,
-                 "avatarURL",
-                 "friendCount",
+                 "avatar_url",
+                 "friend_count",
                  friends
 ) VALUES (
     $1, $2, $3, $4, $5, $6
@@ -32,8 +32,13 @@ OFFSET $2;
 
 -- name: UpdateUser :one
 UPDATE "user"
-SET name = $1,password = $2, nickname = $3, "avatarURL" = $4, "friendCount" = $5, friends = $6
-WHERE id = $7
+SET name = COALESCE(sqlc.narg(name), name),
+    password = COALESCE(sqlc.narg(password), password),
+    nickname = COALESCE(sqlc.narg(nickname), nickname),
+    avatar_url = COALESCE(sqlc.narg(avatar_url), avatar_url),
+    friend_count = COALESCE(sqlc.narg(friend_count), friend_count),
+    friends = COALESCE(sqlc.narg(friends), friends)
+WHERE id = sqlc.arg(id)
 RETURNING *;
 
 -- name: DeleteUser :exec

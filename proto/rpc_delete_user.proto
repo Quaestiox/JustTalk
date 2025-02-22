@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package pb;
+
+import  "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Quaestiox/JustTalk_backend/pb";
+
+message DeleteUserRequest{
+  int64 id = 1;
+}
+
+message DeleteUserResponse{
+  string response = 1;
+}
+

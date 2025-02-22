@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package pb;
+
+import  "google/protobuf/timestamp.proto";
+import "user.proto";
+option go_package = "github.com/Quaestiox/JustTalk_backend/pb";
+
+message GetUserInfoRequest{
+  int64 id = 1;
+}
+
+message GetUserInfoResponse{
+  UserResponse user = 1;
+}

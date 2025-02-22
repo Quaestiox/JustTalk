@@ -23,8 +23,8 @@ func (server *Server) createFriendship(ctx *gin.Context) {
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*util.Payload)
 
 	arg := db.CreateFriendShipParams{
-		FromId: authPayload.UserID,
-		ToId:   req.ToID,
+		FromID: authPayload.UserID,
+		ToID:   req.ToID,
 	}
 
 	friendship, err := server.store.CreateFriendShip(ctx, arg)
@@ -58,7 +58,7 @@ func (server *Server) getFriendship(ctx *gin.Context) {
 	}
 
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*util.Payload)
-	if friendship.FromId != authPayload.UserID && friendship.ToId != authPayload.UserID {
+	if friendship.FromID != authPayload.UserID && friendship.ToID != authPayload.UserID {
 		err := errors.New("friendship doesn't relate to the authenticated user")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
@@ -82,7 +82,7 @@ func (server *Server) listFriendship(ctx *gin.Context) {
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*util.Payload)
 
 	arg := db.ListFriendShipParams{
-		FromId: authPayload.UserID,
+		FromID: authPayload.UserID,
 		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}

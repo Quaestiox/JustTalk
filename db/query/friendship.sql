@@ -1,7 +1,7 @@
 -- name: CreateFriendShip :one
 INSERT INTO "friendship"(
-                       "fromId",
-                       "toId",
+                       "from_id",
+                       "to_id",
                        status
 ) VALUES (
     $1, $2, $3
@@ -13,7 +13,7 @@ WHERE id = $1 LIMIT 1;
 
 -- name: ListFriendShip :many
 SELECT * FROM "friendship"
-WHERE ("fromId" = $1) OR ("toId" = $1)
+WHERE ("from_id" = $1) OR ("to_id" = $1)
 ORDER BY id
 LIMIT $2
 OFFSET $3;
