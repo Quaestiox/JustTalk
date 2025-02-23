@@ -79,6 +79,37 @@
         ]
       }
     },
+    "/v1/get_msg": {
+      "get": {
+        "operationId": "JustTalk_GetMessage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetMsgResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "JustTalk"
+        ]
+      }
+    },
     "/v1/get_user_info": {
       "get": {
         "operationId": "JustTalk_GetUserInfo",
@@ -135,6 +166,37 @@
             "schema": {
               "$ref": "#/definitions/pbLoginUserRequest"
             }
+          }
+        ],
+        "tags": [
+          "JustTalk"
+        ]
+      }
+    },
+    "/v1/receive_msg": {
+      "get": {
+        "operationId": "JustTalk_ReceiveMessage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbReceiveMsgResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "senderId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
           }
         ],
         "tags": [
@@ -297,6 +359,14 @@
         }
       }
     },
+    "pbGetMsgResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "$ref": "#/definitions/pbMsg"
+        }
+      }
+    },
     "pbGetUserInfoResponse": {
       "type": "object",
       "properties": {
@@ -348,6 +418,18 @@
         "sendAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbReceiveMsgResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbMsg"
+          }
         }
       }
     },

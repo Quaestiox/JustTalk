@@ -14,3 +14,21 @@ message CreateMsgRequest{
 message CreateMsgResponse{
   Msg message = 1;
 }
+
+
+message ReceiveMsgRequest{
+  int64 sender_id = 1;
+}
+
+message ReceiveMsgResponse{
+  repeated Msg message = 1;
+}
+
+message GetMsgRequest{
+  int64 id = 1;
+}
+
+message GetMsgResponse{
+  Msg message = 1;
+}
+

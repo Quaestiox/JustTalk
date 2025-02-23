@@ -52,6 +52,18 @@ service JustTalk{
       body: "*"
     };
   }
+
+  rpc GetMessage(GetMsgRequest) returns (GetMsgResponse){
+    option(google.api.http) = {
+      get: "/v1/get_msg"
+    };
+  }
+
+  rpc ReceiveMessage(ReceiveMsgRequest) returns (ReceiveMsgResponse){
+    option(google.api.http) = {
+      get: "/v1/receive_msg"
+    };
+  }
 }
 
 message SayHelloRequest{

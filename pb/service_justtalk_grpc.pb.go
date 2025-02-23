@@ -19,13 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	JustTalk_SayHello_FullMethodName    = "/pb.JustTalk/SayHello"
-	JustTalk_CreateUser_FullMethodName  = "/pb.JustTalk/CreateUser"
-	JustTalk_LoginUser_FullMethodName   = "/pb.JustTalk/LoginUser"
-	JustTalk_UpdateUser_FullMethodName  = "/pb.JustTalk/UpdateUser"
-	JustTalk_DeleteUser_FullMethodName  = "/pb.JustTalk/DeleteUser"
-	JustTalk_GetUserInfo_FullMethodName = "/pb.JustTalk/GetUserInfo"
-	JustTalk_SendMessage_FullMethodName = "/pb.JustTalk/SendMessage"
+	JustTalk_SayHello_FullMethodName       = "/pb.JustTalk/SayHello"
+	JustTalk_CreateUser_FullMethodName     = "/pb.JustTalk/CreateUser"
+	JustTalk_LoginUser_FullMethodName      = "/pb.JustTalk/LoginUser"
+	JustTalk_UpdateUser_FullMethodName     = "/pb.JustTalk/UpdateUser"
+	JustTalk_DeleteUser_FullMethodName     = "/pb.JustTalk/DeleteUser"
+	JustTalk_GetUserInfo_FullMethodName    = "/pb.JustTalk/GetUserInfo"
+	JustTalk_SendMessage_FullMethodName    = "/pb.JustTalk/SendMessage"
+	JustTalk_GetMessage_FullMethodName     = "/pb.JustTalk/GetMessage"
+	JustTalk_ReceiveMessage_FullMethodName = "/pb.JustTalk/ReceiveMessage"
 )
 
 // JustTalkClient is the client API for JustTalk service.
@@ -39,6 +41,8 @@ type JustTalkClient interface {
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error)
 	SendMessage(ctx context.Context, in *CreateMsgRequest, opts ...grpc.CallOption) (*CreateMsgResponse, error)
+	GetMessage(ctx context.Context, in *GetMsgRequest, opts ...grpc.CallOption) (*GetMsgResponse, error)
+	ReceiveMessage(ctx context.Context, in *ReceiveMsgRequest, opts ...grpc.CallOption) (*ReceiveMsgResponse, error)
 }
 
 type justTalkClient struct {
@@ -119,6 +123,26 @@ func (c *justTalkClient) SendMessage(ctx context.Context, in *CreateMsgRequest, 
 	return out, nil
 }
 
+func (c *justTalkClient) GetMessage(ctx context.Context, in *GetMsgRequest, opts ...grpc.CallOption) (*GetMsgResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMsgResponse)
+	err := c.cc.Invoke(ctx, JustTalk_GetMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *justTalkClient) ReceiveMessage(ctx context.Context, in *ReceiveMsgRequest, opts ...grpc.CallOption) (*ReceiveMsgResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReceiveMsgResponse)
+	err := c.cc.Invoke(ctx, JustTalk_ReceiveMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JustTalkServer is the server API for JustTalk service.
 // All implementations must embed UnimplementedJustTalkServer
 // for forward compatibility.
@@ -130,6 +154,8 @@ type JustTalkServer interface {
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error)
 	SendMessage(context.Context, *CreateMsgRequest) (*CreateMsgResponse, error)
+	GetMessage(context.Context, *GetMsgRequest) (*GetMsgResponse, error)
+	ReceiveMessage(context.Context, *ReceiveMsgRequest) (*ReceiveMsgResponse, error)
 	mustEmbedUnimplementedJustTalkServer()
 }
 
@@ -160,6 +186,12 @@ func (UnimplementedJustTalkServer) GetUserInfo(context.Context, *GetUserInfoRequ
 }
 func (UnimplementedJustTalkServer) SendMessage(context.Context, *CreateMsgRequest) (*CreateMsgResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
+}
+func (UnimplementedJustTalkServer) GetMessage(context.Context, *GetMsgRequest) (*GetMsgResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMessage not implemented")
+}
+func (UnimplementedJustTalkServer) ReceiveMessage(context.Context, *ReceiveMsgRequest) (*ReceiveMsgResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReceiveMessage not implemented")
 }
 func (UnimplementedJustTalkServer) mustEmbedUnimplementedJustTalkServer() {}
 func (UnimplementedJustTalkServer) testEmbeddedByValue()                  {}
@@ -308,6 +340,42 @@ func _JustTalk_SendMessage_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JustTalk_GetMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMsgRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JustTalkServer).GetMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: JustTalk_GetMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JustTalkServer).GetMessage(ctx, req.(*GetMsgRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _JustTalk_ReceiveMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReceiveMsgRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JustTalkServer).ReceiveMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: JustTalk_ReceiveMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JustTalkServer).ReceiveMessage(ctx, req.(*ReceiveMsgRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // JustTalk_ServiceDesc is the grpc.ServiceDesc for JustTalk service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -342,6 +410,14 @@ var JustTalk_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendMessage",
 			Handler:    _JustTalk_SendMessage_Handler,
+		},
+		{
+			MethodName: "GetMessage",
+			Handler:    _JustTalk_GetMessage_Handler,
+		},
+		{
+			MethodName: "ReceiveMessage",
+			Handler:    _JustTalk_ReceiveMessage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

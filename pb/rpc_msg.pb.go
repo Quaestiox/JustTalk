@@ -118,6 +118,182 @@ func (x *CreateMsgResponse) GetMessage() *Msg {
 	return nil
 }
 
+type ReceiveMsgRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SenderId      int64                  `protobuf:"varint,1,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReceiveMsgRequest) Reset() {
+	*x = ReceiveMsgRequest{}
+	mi := &file_rpc_msg_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReceiveMsgRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReceiveMsgRequest) ProtoMessage() {}
+
+func (x *ReceiveMsgRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_rpc_msg_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReceiveMsgRequest.ProtoReflect.Descriptor instead.
+func (*ReceiveMsgRequest) Descriptor() ([]byte, []int) {
+	return file_rpc_msg_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ReceiveMsgRequest) GetSenderId() int64 {
+	if x != nil {
+		return x.SenderId
+	}
+	return 0
+}
+
+type ReceiveMsgResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       []*Msg                 `protobuf:"bytes,1,rep,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReceiveMsgResponse) Reset() {
+	*x = ReceiveMsgResponse{}
+	mi := &file_rpc_msg_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReceiveMsgResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReceiveMsgResponse) ProtoMessage() {}
+
+func (x *ReceiveMsgResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_rpc_msg_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReceiveMsgResponse.ProtoReflect.Descriptor instead.
+func (*ReceiveMsgResponse) Descriptor() ([]byte, []int) {
+	return file_rpc_msg_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ReceiveMsgResponse) GetMessage() []*Msg {
+	if x != nil {
+		return x.Message
+	}
+	return nil
+}
+
+type GetMsgRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMsgRequest) Reset() {
+	*x = GetMsgRequest{}
+	mi := &file_rpc_msg_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMsgRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMsgRequest) ProtoMessage() {}
+
+func (x *GetMsgRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_rpc_msg_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMsgRequest.ProtoReflect.Descriptor instead.
+func (*GetMsgRequest) Descriptor() ([]byte, []int) {
+	return file_rpc_msg_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetMsgRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type GetMsgResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       *Msg                   `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetMsgResponse) Reset() {
+	*x = GetMsgResponse{}
+	mi := &file_rpc_msg_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetMsgResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetMsgResponse) ProtoMessage() {}
+
+func (x *GetMsgResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_rpc_msg_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetMsgResponse.ProtoReflect.Descriptor instead.
+func (*GetMsgResponse) Descriptor() ([]byte, []int) {
+	return file_rpc_msg_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetMsgResponse) GetMessage() *Msg {
+	if x != nil {
+		return x.Message
+	}
+	return nil
+}
+
 var File_rpc_msg_proto protoreflect.FileDescriptor
 
 var file_rpc_msg_proto_rawDesc = string([]byte{
@@ -133,10 +309,22 @@ var file_rpc_msg_proto_rawDesc = string([]byte{
 	0x0a, 0x11, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f,
 	0x6e, 0x73, 0x65, 0x12, 0x21, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x07, 0x2e, 0x70, 0x62, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x07, 0x6d,
-	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x42, 0x2a, 0x5a, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x51, 0x75, 0x61, 0x65, 0x73, 0x74, 0x69, 0x6f, 0x78, 0x2f, 0x4a,
-	0x75, 0x73, 0x74, 0x54, 0x61, 0x6c, 0x6b, 0x5f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2f,
-	0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x30, 0x0a, 0x11, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76,
+	0x65, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x73,
+	0x65, 0x6e, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08,
+	0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x49, 0x64, 0x22, 0x37, 0x0a, 0x12, 0x52, 0x65, 0x63, 0x65,
+	0x69, 0x76, 0x65, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x21,
+	0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x07, 0x2e, 0x70, 0x62, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x22, 0x1f, 0x0a, 0x0d, 0x47, 0x65, 0x74, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02,
+	0x69, 0x64, 0x22, 0x33, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x21, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x07, 0x2e, 0x70, 0x62, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x07,
+	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x42, 0x2a, 0x5a, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75,
+	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x51, 0x75, 0x61, 0x65, 0x73, 0x74, 0x69, 0x6f, 0x78, 0x2f,
+	0x4a, 0x75, 0x73, 0x74, 0x54, 0x61, 0x6c, 0x6b, 0x5f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
+	0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
 var (
@@ -151,19 +339,25 @@ func file_rpc_msg_proto_rawDescGZIP() []byte {
 	return file_rpc_msg_proto_rawDescData
 }
 
-var file_rpc_msg_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_rpc_msg_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_rpc_msg_proto_goTypes = []any{
-	(*CreateMsgRequest)(nil),  // 0: pb.CreateMsgRequest
-	(*CreateMsgResponse)(nil), // 1: pb.CreateMsgResponse
-	(*Msg)(nil),               // 2: pb.Msg
+	(*CreateMsgRequest)(nil),   // 0: pb.CreateMsgRequest
+	(*CreateMsgResponse)(nil),  // 1: pb.CreateMsgResponse
+	(*ReceiveMsgRequest)(nil),  // 2: pb.ReceiveMsgRequest
+	(*ReceiveMsgResponse)(nil), // 3: pb.ReceiveMsgResponse
+	(*GetMsgRequest)(nil),      // 4: pb.GetMsgRequest
+	(*GetMsgResponse)(nil),     // 5: pb.GetMsgResponse
+	(*Msg)(nil),                // 6: pb.Msg
 }
 var file_rpc_msg_proto_depIdxs = []int32{
-	2, // 0: pb.CreateMsgResponse.message:type_name -> pb.Msg
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	6, // 0: pb.CreateMsgResponse.message:type_name -> pb.Msg
+	6, // 1: pb.ReceiveMsgResponse.message:type_name -> pb.Msg
+	6, // 2: pb.GetMsgResponse.message:type_name -> pb.Msg
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_rpc_msg_proto_init() }
@@ -178,7 +372,7 @@ func file_rpc_msg_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rpc_msg_proto_rawDesc), len(file_rpc_msg_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
