@@ -32,7 +32,7 @@ func (server *Server) SendMessage(ctx context.Context, req *pb.CreateMsgRequest)
 
 	rabbitmq := rabbitmq.NewRabbitMQSimple("chat" + strconv.Itoa(int(msg.SenderID)) + "-" + strconv.Itoa(int(msg.ReceiverID)))
 	rabbitmq.PublishSimple(strconv.Itoa(int(msg.ID)))
-	log.Printf("%d sended successfully.\n", msg.SenderID)
+	log.Printf("User[%d] sended successfully.\n", msg.SenderID)
 
 	rspMsg := &pb.Msg{
 		Id:         msg.ID,

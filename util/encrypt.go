@@ -10,14 +10,14 @@ import (
 
 var key = []byte("01234567890123456789012345678901")
 
-// AES-GCM 加密
+// AES-GCM
 func EncryptAES(plaintext string) (string, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
 	}
 
-	nonce := make([]byte, 12) // GCM 建议使用 12 字节随机数
+	nonce := make([]byte, 12)
 	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
 		return "", err
 	}
@@ -31,7 +31,6 @@ func EncryptAES(plaintext string) (string, error) {
 	return base64.StdEncoding.EncodeToString(append(nonce, ciphertext...)), nil
 }
 
-// AES-GCM 解密
 func DecryptAES(encryptedText string) (string, error) {
 	data, err := base64.StdEncoding.DecodeString(encryptedText)
 	if err != nil {
@@ -48,8 +47,8 @@ func DecryptAES(encryptedText string) (string, error) {
 		return "", err
 	}
 
-	nonce := data[:12]      // 取出 Nonce
-	ciphertext := data[12:] // 取出密文
+	nonce := data[:12]
+	ciphertext := data[12:]
 	plaintext, err := aesGCM.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
 		return "", err

@@ -21,7 +21,7 @@ message ReceiveMsgRequest{
 }
 
 message ReceiveMsgResponse{
-  repeated Msg message = 1;
+  Msg message = 1;
 }
 
 message GetMsgRequest{

@@ -105,7 +105,7 @@ func (r *RabbitMQ) GetMsg() <-chan []byte {
 	go func() {
 
 		for {
-			// 获取队列的消息数量
+			// get message number
 			qInfo, err := r.channel.QueueInspect(q.Name)
 			if err != nil {
 				log.Print("队列检查失败:", err)
@@ -113,14 +113,13 @@ func (r *RabbitMQ) GetMsg() <-chan []byte {
 			}
 
 			if qInfo.Messages == 0 {
-				// 通知 RabbitMQ 取消消费，退出循环
 				err := r.channel.Cancel("consumer_tag", false)
 				if err != nil {
 					log.Print("取消消费者失败:", err)
 				}
 				return
 			}
-			time.Sleep(1 * time.Second) // 每秒检查一次
+			time.Sleep(1 * time.Second)
 		}
 	}()
 	msgs, err := r.channel.Consume(
@@ -143,15 +142,15 @@ func (r *RabbitMQ) GetMsg() <-chan []byte {
 func (r *RabbitMQ) GetOneMsg() ([]byte, bool) {
 	msg, ok, err := r.channel.Get(
 		r.QueueName,
-		true, // autoAck = true, 自动确认消息
+		true,
 	)
 	if err != nil {
-		log.Print("获取消息失败:", err)
+		log.Print("get Message failed:", err)
 		return nil, false
 	}
 
 	if !ok {
-		log.Print("队列为空，没有新消息")
+		log.Print("no message")
 		return nil, false
 	}
 
