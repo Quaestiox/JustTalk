@@ -77,6 +77,10 @@ work-pub:
 work-rec:
 	go run ./mq_test/work_mod/worker/worker.go
 
+grpcurl:
+	grpcurl -plaintext localhost:9101 list pb.JustTalk
+
+
 .PHONY: postgres createdb dropdb stop_rm_postgres migrateup migratedown migrateversion migrateforce1 \
 	sqlc proto-l proto-w evans client redis rabbitmq\
 	simple-pub simple-rec

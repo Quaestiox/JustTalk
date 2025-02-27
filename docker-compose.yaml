@@ -6,16 +6,27 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=123567
       - POSTGRES_DB=justtalk
+  redis:
+    image: redis
+    ports:
+      - "6380:6379"
   api:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+      - "9101:9101"
     environment:
       - DB_SOURCE=postgresql://root:123567@postgres:5432/justtalk?sslmode=disable
     depends_on:
       - postgres
+      - redis
+      - rabbitmq
     entrypoint: ["/usr/app/wait-for.sh", "postgres:5432", "--", "/usr/app/start.sh"]
     command: ["/usr/app/main"]
-
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
