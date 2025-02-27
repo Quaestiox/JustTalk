@@ -3,10 +3,8 @@ package rabbitmq
 import (
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/rs/zerolog/log"
-	"time"
+	"github.com/spf13/viper"
 )
-
-const MQURL = "amqp://Quaestio:123567@:5672/master"
 
 type RabbitMQ struct {
 	conn      *amqp.Connection
@@ -18,7 +16,8 @@ type RabbitMQ struct {
 }
 
 func NewRabbitMQ(queueName string, exchange string, key string) *RabbitMQ {
-	return &RabbitMQ{QueueName: queueName, Exchange: exchange, Key: key, Mqurl: MQURL}
+	url := viper.GetString("MQ_URL")
+	return &RabbitMQ{QueueName: queueName, Exchange: exchange, Key: key, Mqurl: url}
 }
 
 func (r *RabbitMQ) Destroy() {
@@ -91,54 +90,6 @@ func (r *RabbitMQ) ConsumeSimple() {
 	<-forever
 }
 
-func (r *RabbitMQ) GetMsg() <-chan []byte {
-	msgChan := make(chan []byte)
-	q, err := r.channel.QueueDeclare(
-		r.QueueName,
-		false,
-		false,
-		false,
-		false,
-		nil)
-	Unwrap(err, "")
-
-	go func() {
-
-		for {
-			// get message number
-			qInfo, err := r.channel.QueueInspect(q.Name)
-			if err != nil {
-				log.Print("队列检查失败:", err)
-				return
-			}
-
-			if qInfo.Messages == 0 {
-				err := r.channel.Cancel("consumer_tag", false)
-				if err != nil {
-					log.Print("取消消费者失败:", err)
-				}
-				return
-			}
-			time.Sleep(1 * time.Second)
-		}
-	}()
-	msgs, err := r.channel.Consume(
-		q.Name,
-		"",
-		true,
-		false,
-		false,
-		false,
-		nil)
-	Unwrap(err, "")
-	go func() {
-		for d := range msgs {
-			msgChan <- d.Body
-		}
-	}()
-
-	return msgChan
-}
 func (r *RabbitMQ) GetOneMsg() ([]byte, bool) {
 	msg, ok, err := r.channel.Get(
 		r.QueueName,
